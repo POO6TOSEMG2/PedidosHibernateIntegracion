@@ -1,0 +1,14 @@
+package com.pruebas;
+
+public class Niveles {
+	int id;
+	Carreras fkCarrera;
+	int nivel;
+	
+	public Niveles() {
+		super();
+	}
+	
+	
+	
+}

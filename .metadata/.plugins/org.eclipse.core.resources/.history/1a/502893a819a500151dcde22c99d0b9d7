@@ -1,0 +1,32 @@
+package com.hibernateintegracion.controllers;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.hibernateintegracion.dao.ProductosDAO;
+import com.hibernateintegracion.dao.impl.PostgresProductosDAO;
+import com.hibernateintegracion.domain.Productos;
+
+public class ProductoController {
+	
+	@Autowired
+	ProductosDAO productosDAO;
+	
+	public void insertar (Productos objProducto){
+		productosDAO.insertar(objProducto);
+	}
+	
+	public void cambiar (Productos objProducto){
+		productosDAO.cambiar(objProducto);
+	}
+	
+	public void eliminar (Productos objProducto){
+		productosDAO.eliminar(objProducto);
+	}
+	
+	public List<Productos> obtenerProductos(){
+		return productosDAO.obtenerProductos();
+	}
+	
+}

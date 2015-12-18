@@ -1,0 +1,29 @@
+package com.testpedidos;
+
+import java.util.List;
+
+import com.hibernateintegracion.dao.PedidosDAO;
+import com.hibernateintegracion.dao.impl.PostgresPedidosDAO;
+import com.hibernateintegracion.domain.Almacenes;
+import com.hibernateintegracion.domain.Clientes;
+import com.hibernateintegracion.domain.Pedidos;
+
+public class TestPedidos {
+	public static void main(String[] args) {
+		PedidosDAO pedidosDAO = new PostgresPedidosDAO();
+		Almacenes al = new Almacenes(100);
+		Clientes cl = new Clientes(100003);
+		
+	//	Pedidos pedido = new Pedidos(49476, al, cl, "dd", 12.4, 4.4, 'R');
+		
+	//	pedidosDAO.insertar(pedido);
+		
+		
+		List<Pedidos> pedidos = pedidosDAO.pedidosReservados();
+		
+		for(Pedidos p: pedidos)
+			System.out.println(p.getNumero());
+		
+		
+	}
+}

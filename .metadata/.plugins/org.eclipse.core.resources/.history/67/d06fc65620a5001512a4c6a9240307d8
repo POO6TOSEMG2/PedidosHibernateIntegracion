@@ -1,0 +1,703 @@
+package com.view.uiDesktop;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+import javax.swing.JButton;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+import javax.swing.JLabel;
+
+import java.awt.Font;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.swing.JTextField;
+
+import com.hibernateintegracion.controllers.AlmacenesController;
+import com.hibernateintegracion.controllers.ClienteController;
+import com.hibernateintegracion.controllers.LineaPedidoController;
+import com.hibernateintegracion.controllers.PedidosController;
+import com.hibernateintegracion.controllers.ProductoController;
+import com.hibernateintegracion.controllers.StockController;
+import com.hibernateintegracion.domain.Almacenes;
+import com.hibernateintegracion.domain.Clientes;
+import com.hibernateintegracion.domain.Pedidos;
+import com.toedter.calendar.JDateChooser;
+
+import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+@SuppressWarnings("serial")
+public class Frm_GestionPedidos extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField txtCedula;
+	private JTextField txtCliente;
+	private JTextField txtCodigoAlmacen;
+	private JTextField txtNombreAlmacen;
+	private JTextField txtCodigoCliente;
+	private JTextField txtDireccion;
+	private JTextField txtTelefono;
+	private JTable tableConsultas;
+	DefaultTableModel modelo;
+	DefaultTableModel modeloProductos;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Frm_GestionPedidos frame = new Frm_GestionPedidos();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	ApplicationContext context = new GenericXmlApplicationContext("appContext.xml");
+	AlmacenesController almacenesController = context.getBean("almacenesController", AlmacenesController.class);
+	ClienteController clienteController = context.getBean("clienteController", ClienteController.class);
+	ProductoController productoController = context.getBean("productoController", ProductoController.class);
+	PedidosController pedidosController = context.getBean("pedidosController", PedidosController.class);
+	LineaPedidoController lineaPedidoController = context.getBean("lineaPedidoController", LineaPedidoController.class);
+	StockController stockController = context.getBean("stockController", StockController.class);
+	
+	private JTextField txtNumeroPedido;
+	
+	/**
+	 * Create the frame.
+	 */
+	public Frm_GestionPedidos() {
+		setTitle("Gestionar Nuevos Pedidos");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 700, 480);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		panel.setBounds(0, 0, 694, 104);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		
+		JButton btnCargarCliente = new JButton("Cargar Cliente");
+		btnCargarCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modelo = new DefaultTableModel();
+				
+				tableConsultas = new JTable();
+				modelo.addColumn("Codigo");
+				modelo.addColumn("Cedula");
+				modelo.addColumn("Nombres");
+				
+				tableConsultas.setModel(modelo);
+				
+				List<Cliente> cl = daoCliente.consultarClientes();
+				for(Cliente cli: cl){
+					Object [] ob = new Object[3];
+			        ob[0]=(cli.getCodigoCliente());
+			        ob[1]=(cli.getCedulaCliente());
+			        ob[2]=(cli.getNombreCliente());
+			        modelo.addRow(ob);
+			        ob = null;
+				}
+				
+				int seleccion = JOptionPane.showConfirmDialog(null, new JScrollPane(tableConsultas));
+				int fila = tableConsultas.getSelectedRow();
+				
+				if (seleccion == 0){
+					txtCodigoCliente.setText(tableConsultas.getValueAt(fila, 0).toString());
+					txtCedula.setText(tableConsultas.getValueAt(fila, 1).toString());
+					txtCliente.setText(tableConsultas.getValueAt(fila, 2).toString());
+				} else{
+					JOptionPane.showMessageDialog(null, "Ha cancelado su b�squeda...");
+				}
+			}
+		});
+		btnCargarCliente.setBounds(21, 71, 111, 23);
+		panel.add(btnCargarCliente);
+		
+		JButton btnCargarAlmacen = new JButton("Cargar Almacen");
+		btnCargarAlmacen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				modelo = new DefaultTableModel();
+				
+				tableConsultas = new JTable();
+				modelo.addColumn("Codigo");
+				modelo.addColumn("Nombre");
+				modelo.addColumn("Direcci�n");
+				modelo.addColumn("Telefono");
+				
+				tableConsultas.setModel(modelo);
+				
+				List<Almacen> al = daoAlmacen.consultarAlmacenes();
+				for(Almacen alm: al){
+					Object [] ob = new Object[4];
+			        ob[0]=(alm.getCodigoAlmacen());
+			        ob[1]=(alm.getNombreAlmacen());
+			        ob[2]=(alm.getDireccionAlmacen());
+			        ob[3]=(alm.getTelefonoAlmacen());
+			        modelo.addRow(ob);
+			        ob = null;
+				}
+				
+				int seleccion = JOptionPane.showConfirmDialog(null, new JScrollPane(tableConsultas));
+				int fila = tableConsultas.getSelectedRow();
+				
+				if (seleccion == 0){
+					txtCodigoAlmacen.setText(tableConsultas.getValueAt(fila, 0).toString());
+					txtNombreAlmacen.setText(tableConsultas.getValueAt(fila, 1).toString());
+					txtDireccion.setText(tableConsultas.getValueAt(fila, 2).toString());
+					txtTelefono.setText(tableConsultas.getValueAt(fila, 3).toString());
+				} else{
+					JOptionPane.showMessageDialog(null, "Ha cancelado su b�squeda...");
+				}
+				
+				
+			}
+		});
+		btnCargarAlmacen.setBounds(197, 71, 111, 23);
+		panel.add(btnCargarAlmacen);
+		
+		JLabel lblCedula = new JLabel("Cedula");
+		lblCedula.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblCedula.setBounds(179, 11, 78, 23);
+		panel.add(lblCedula);
+		
+		txtCedula = new JTextField();
+		txtCedula.setEditable(false);
+		txtCedula.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtCedula.setBounds(230, 11, 78, 22);
+		panel.add(txtCedula);
+		txtCedula.setColumns(10);
+		
+		txtCliente = new JTextField();
+		txtCliente.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtCliente.setEditable(false);
+		txtCliente.setColumns(10);
+		txtCliente.setBounds(82, 38, 226, 22);
+		panel.add(txtCliente);
+		
+		JLabel lblNombres = new JLabel("Nombres:");
+		lblNombres.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblNombres.setBounds(21, 38, 78, 23);
+		panel.add(lblNombres);
+		
+		JLabel lblCdigo = new JLabel("C\u00F3digo");
+		lblCdigo.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblCdigo.setBounds(331, 11, 78, 23);
+		panel.add(lblCdigo);
+		
+		txtCodigoAlmacen = new JTextField();
+		txtCodigoAlmacen.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtCodigoAlmacen.setEditable(false);
+		txtCodigoAlmacen.setColumns(10);
+		txtCodigoAlmacen.setBounds(392, 11, 78, 22);
+		panel.add(txtCodigoAlmacen);
+		
+		JLabel lblAlmacen = new JLabel("Almacen");
+		lblAlmacen.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblAlmacen.setBounds(331, 37, 78, 23);
+		panel.add(lblAlmacen);
+		
+		txtNombreAlmacen = new JTextField();
+		txtNombreAlmacen.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtNombreAlmacen.setEditable(false);
+		txtNombreAlmacen.setColumns(10);
+		txtNombreAlmacen.setBounds(392, 37, 232, 22);
+		panel.add(txtNombreAlmacen);
+		
+		JLabel lblCdigo_1 = new JLabel("C\u00F3digo");
+		lblCdigo_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblCdigo_1.setBounds(21, 11, 78, 23);
+		panel.add(lblCdigo_1);
+		
+		txtCodigoCliente = new JTextField();
+		txtCodigoCliente.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtCodigoCliente.setEditable(false);
+		txtCodigoCliente.setColumns(10);
+		txtCodigoCliente.setBounds(82, 11, 78, 22);
+		panel.add(txtCodigoCliente);
+		
+		JLabel lblDireccin = new JLabel("Direcci\u00F3n");
+		lblDireccin.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblDireccin.setBounds(331, 70, 78, 23);
+		panel.add(lblDireccin);
+		
+		txtDireccion = new JTextField();
+		txtDireccion.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtDireccion.setEditable(false);
+		txtDireccion.setColumns(10);
+		txtDireccion.setBounds(392, 70, 232, 22);
+		panel.add(txtDireccion);
+		
+		JLabel lblTelefono = new JLabel("Telefono");
+		lblTelefono.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblTelefono.setBounds(480, 11, 78, 23);
+		panel.add(lblTelefono);
+		
+		txtTelefono = new JTextField();
+		txtTelefono.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtTelefono.setEditable(false);
+		txtTelefono.setColumns(10);
+		txtTelefono.setBounds(541, 11, 83, 22);
+		panel.add(txtTelefono);
+		
+		JPanel pnlPedido = new JPanel();
+		pnlPedido.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+		pnlPedido.setBounds(0, 104, 694, 84);
+		contentPane.add(pnlPedido);
+		pnlPedido.setLayout(null);
+		
+		JLabel lblNmeroDePedido = new JLabel("N\u00FAmero de Pedido");
+		lblNmeroDePedido.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblNmeroDePedido.setBounds(20, 11, 107, 23);
+		pnlPedido.add(lblNmeroDePedido);
+		
+		txtNumeroPedido = new JTextField();
+		txtNumeroPedido.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtNumeroPedido.setColumns(10);
+		txtNumeroPedido.setBounds(137, 10, 78, 22);
+		pnlPedido.add(txtNumeroPedido);
+		
+		dateChooser = new JDateChooser();
+		dateChooser.setBounds(81, 41, 134, 23);
+		pnlPedido.add(dateChooser);
+		
+		JLabel lblFecha = new JLabel("Fecha");
+		lblFecha.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblFecha.setBounds(20, 41, 107, 23);
+		pnlPedido.add(lblFecha);
+		
+		final JButton btnEliminarEntrada = new JButton("Eliminar Entrada");
+		btnEliminarEntrada.setEnabled(false);
+		final JButton btnEliminarPedido = new JButton("Eliminar Pedido");
+		final JButton btnLimpiarPantalla = new JButton("Limpiar Pantalla");
+		final JButton btnAprobarEntrega = new JButton("Aprobar Entrega");
+		final JButton btnRegistrarPedido = new JButton("Registrar Pedido");
+		final JButton btnDejarReservado = new JButton("Dejar Reservado");
+		
+		btnRegistrarPedido.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if ((txtNumeroPedido.getText().length() != 0)
+						&&(txtCodigoCliente.getText().length() != 0)
+						&&(txtCodigoAlmacen.getText().length() != 0)){
+					
+					daoPedido.insertar(objPedido("R"));
+					txtNumeroPedido.setEditable(false);
+					tablaProductosDisponibles.setEnabled(true);
+					btnRegistrarPedido.setEnabled(false);
+					btnLimpiarPantalla.setEnabled(false);
+					btnDejarReservado.setEnabled(true);
+				} else{
+					JOptionPane.showMessageDialog(null, "Datos incompletos...");
+				}
+			}
+		});
+		btnRegistrarPedido.setBounds(240, 8, 128, 32);
+		pnlPedido.add(btnRegistrarPedido);
+		
+		
+		btnAprobarEntrega.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if (txtNumeroPedido.getText().length() != 0){
+					daoPedido.cambiarEstado(objPedido("A"));
+					daoPedido.actualizar(objPedido());
+					btnLimpiarPantalla.setEnabled(true);
+					
+					reLoadForm();
+					
+				} else {
+					JOptionPane.showMessageDialog(null, "No existe un pedido seleccionado...");
+				}
+				
+				
+			}
+		});
+		btnAprobarEntrega.setBounds(516, 11, 128, 53);
+		pnlPedido.add(btnAprobarEntrega);
+		btnLimpiarPantalla.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reLoadForm();
+			}
+		});
+		btnLimpiarPantalla.setBounds(240, 41, 128, 32);
+		pnlPedido.add(btnLimpiarPantalla);
+		
+		JButton btnPedidoExistente = new JButton("Pedido Existente");
+		btnPedidoExistente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Frm_PedidosReservados atrasado = new Frm_PedidosReservados();
+				atrasado.setLocationRelativeTo(null);
+				atrasado.setVisible(true);
+				dispose();
+			}
+		});
+		btnPedidoExistente.setBounds(378, 41, 128, 32);
+		pnlPedido.add(btnPedidoExistente);
+		
+		
+		btnDejarReservado.setEnabled(false);
+		btnDejarReservado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reLoadForm();
+				btnDejarReservado.setEnabled(false);
+			}
+		});
+		btnDejarReservado.setBounds(378, 8, 128, 32);
+		pnlPedido.add(btnDejarReservado);
+		
+		JLabel lblProductosSeleccionados = new JLabel("Productos Seleccionados");
+		lblProductosSeleccionados.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblProductosSeleccionados.setBounds(30, 199, 149, 22);
+		contentPane.add(lblProductosSeleccionados);
+		
+		JLabel lblProductosDisponibles = new JLabel("Productos Disponibles");
+		lblProductosDisponibles.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblProductosDisponibles.setBounds(535, 199, 149, 22);
+		contentPane.add(lblProductosDisponibles);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 220, 347, 165);
+		contentPane.add(panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+			
+		DefaultTableModel model = new DefaultTableModel();
+		
+		tablaProductosElegidos = new JTable();
+		tablaProductosElegidos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				btnEliminarEntrada.setEnabled(true);				
+			}
+		});
+		model.addColumn("Codigo");
+		model.addColumn("Descripci�n");
+		model.addColumn("Precio");
+		model.addColumn("Cantidad");
+		model.addColumn("SubTotal");
+		
+		tablaProductosElegidos.setModel(model);
+		
+		panel_1.add(new JScrollPane(tablaProductosElegidos), BorderLayout.CENTER);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBounds(347, 220, 347, 165);
+		contentPane.add(panel_2);
+		panel_2.setLayout(new BorderLayout(0, 0));
+		
+		tablaProductosDisponibles = new JTable();
+		tablaProductosDisponibles.setEnabled(false);
+		tablaProductosDisponibles.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				
+				try {
+					if (txtNumeroPedido.getText().length() != 0){
+						int f = tablaProductosDisponibles.getSelectedRow();
+						str = JOptionPane.showInputDialog("Ingrese la cantidad del producto...");
+						
+						
+						if (str.length() != 0){
+														
+							int cantidad = Integer.parseInt(str);
+							
+							Producto verStockProd = new Producto();
+							verStockProd.setCodigoProducto(Integer.parseInt(tablaProductosDisponibles.getValueAt(f, 0).toString()));
+							verStockProd.setStockProducto(cantidad);
+																					
+							if (stdo.solicitarSalidaProducto(verStockProd)) {
+								
+								double precio = Double.parseDouble(tablaProductosDisponibles.getValueAt(f, 3).toString());
+								subtotal = cantidad * precio;
+								
+								Object [] ob = new Object[5];
+						        ob[0]=(tablaProductosDisponibles.getValueAt(f, 0));
+						        ob[1]=(tablaProductosDisponibles.getValueAt(f, 1));
+						        ob[2]=(tablaProductosDisponibles.getValueAt(f, 3));
+						        ob[3]=(Integer.toString(cantidad));
+						        ob[4]=(Double.toString(subtotal));
+						        
+						        model.addRow(ob);
+						        ob = null;
+						     							        						        
+						        CalculoPedido();
+						        daolinea.insertar(objLinea_Pedido());
+						      
+						        
+						        int stock = Integer.parseInt(tablaProductosDisponibles.getValueAt(f, 2).toString());				        
+						        int nuevoStock = stock - cantidad;
+						        Object nuevoStk = new Object();
+						        nuevoStk = nuevoStock;		        
+						        tablaProductosDisponibles.setValueAt(nuevoStk, f, 2);
+						        
+							}
+						}
+					} else{
+						JOptionPane.showMessageDialog(tablaProductosDisponibles, "No puede seleccionar productos...\nFalta crear un pedido... ");
+					}
+
+				} catch (Exception e) {
+					e.getMessage();
+				}
+				
+			}
+		});
+		modeloProductos = new DefaultTableModel();
+		modeloProductos.addColumn("Codigo");
+		modeloProductos.addColumn("Descripci�n");
+		modeloProductos.addColumn("Stock");
+		modeloProductos.addColumn("Precio");
+		tablaProductosDisponibles.setModel(modeloProductos);
+		
+		List<Producto> prod = daoProducto.obtenerProductos();
+		
+		for(Producto p: prod){
+			Object [] ob = new Object[4];
+	        ob[0]=(p.getCodigoProducto());
+	        ob[1]=(p.getDescripcionProducto());
+	        ob[2]=(p.getStockProducto());
+	        ob[3]=(p.getPrecioProducto());
+	        modeloProductos.addRow(ob);
+	        ob = null;
+		}
+
+		panel_2.add(new JScrollPane(tablaProductosDisponibles), BorderLayout.CENTER);
+		
+		JLabel lblIvaPedido = new JLabel("Total Pedido");
+		lblIvaPedido.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblIvaPedido.setBounds(168, 421, 99, 14);
+		contentPane.add(lblIvaPedido);
+		
+		JLabel label = new JLabel("Iva Pedido");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		label.setBounds(168, 396, 99, 14);
+		contentPane.add(label);
+		
+		txtIva = new JTextField();
+		txtIva.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtIva.setBounds(255, 390, 86, 20);
+		contentPane.add(txtIva);
+		txtIva.setColumns(10);
+		
+		txtTotalPedido = new JTextField();
+		txtTotalPedido.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtTotalPedido.setColumns(10);
+		txtTotalPedido.setBounds(255, 419, 86, 20);
+		contentPane.add(txtTotalPedido);
+		
+		
+		btnEliminarPedido.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (txtNumeroPedido.getText().length() != 0)
+				{
+					Pedido pe;					
+					
+					restaurarEnStock();
+					
+					pe = new Pedido();
+					pe.setNumeroPedido(Integer.parseInt(txtNumeroPedido.getText()));
+					daoPedido.cambiarEstado(objPedido("E"));
+					reLoadForm();
+					btnLimpiarPantalla.setEnabled(true);			
+					
+				} else {
+					JOptionPane.showMessageDialog(null, "No existe un pedido activo...");
+				}
+				
+			}
+		});
+		btnEliminarPedido.setBounds(371, 396, 149, 36);
+		contentPane.add(btnEliminarPedido);
+		
+		
+		btnEliminarEntrada.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnEliminarEntrada.setEnabled(false);
+				
+				Linea_Pedido lpe = new Linea_Pedido();
+				Pedido ped = new Pedido();
+				Producto prod = new Producto();
+				
+				ped.setNumeroPedido(Integer.parseInt(txtNumeroPedido.getText()));
+				prod.setCodigoProducto(Integer.parseInt(tablaProductosElegidos.getValueAt(tablaProductosElegidos.getSelectedRow(), 0).toString()));			
+				lpe.setPedido(ped);
+				lpe.setProducto(prod);
+				lpe.setCantidad(Integer.parseInt(tablaProductosElegidos.getValueAt(tablaProductosElegidos.getSelectedRow(), 3).toString()));
+				
+				List<Linea_Pedido> lineaRestaura = new ArrayList<Linea_Pedido>();
+				lineaRestaura.add(lpe);
+				stdo.solicitarDevolucionProducto(lineaRestaura);
+				
+				daolinea.eliminar(lpe);
+				
+				int f = tablaProductosElegidos.getSelectedRow();
+				int stock = 0; 				        
+				int nuevoStock = 0; 
+				
+				for (int i = 0; i < tablaProductosDisponibles.getRowCount(); i++) {
+					if (Integer.parseInt(tablaProductosElegidos.getValueAt(f, 0).toString()) == 
+							Integer.parseInt(tablaProductosDisponibles.getValueAt(i, 0).toString())) {
+						stock = Integer.parseInt(tablaProductosDisponibles.getValueAt(i, 2).toString());
+						nuevoStock = stock + Integer.parseInt(tablaProductosElegidos.getValueAt(f, 3).toString());
+						Object nuevoStk = new Object();
+						nuevoStk = nuevoStock;
+						tablaProductosDisponibles.setValueAt(nuevoStk, i, 2);
+						break;
+					}
+				}
+
+				model.removeRow(f);
+								
+				CalculoPedido();
+			}
+		});
+		btnEliminarEntrada.setBounds(10, 396, 138, 36);
+		contentPane.add(btnEliminarEntrada);
+		
+		
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				JOptionPane.showMessageDialog(null, "Todo pedido activo se eliminar� por defecto...");
+				
+				if (txtNumeroPedido.getText().length() != 0)
+				{
+					restaurarEnStock();
+					daoPedido.cambiarEstado(objPedido("E"));
+				} 
+
+				dispose();
+			}
+		});
+		btnSalir.setBounds(535, 396, 149, 36);
+		contentPane.add(btnSalir);
+	}
+	
+	String str; 
+	double subtotal;
+	
+	private Linea_Pedido objLinea_Pedido(){
+		Pedido pe = new Pedido();
+		pe.setNumeroPedido(Integer.parseInt(txtNumeroPedido.getText()));
+
+		int f = tablaProductosDisponibles.getSelectedRow();
+		
+		Producto pro = new Producto();
+		pro.setCodigoProducto(Integer.parseInt(tablaProductosDisponibles.getValueAt(f, 0).toString()));
+		
+		Linea_Pedido lpe = new Linea_Pedido();
+		lpe.setCantidad(Integer.parseInt(str));
+		lpe.setSubtotal(subtotal);
+		
+		return new Linea_Pedido(pe, pro, lpe.getCantidad(), lpe.getSubtotal());
+	}
+	
+	private Pedidos objPedido(String estado){
+		Clientes cl = new Clientes();
+		Almacenes al = new Almacenes();
+		cl.setCodigoCliente(Integer.parseInt(txtCodigoCliente.getText()));
+		al.setCodigoAlmacen(Integer.parseInt(txtCodigoAlmacen.getText()));
+		
+		return new Pedido(Integer.parseInt(txtNumeroPedido.getText()), fechaPedido(), 0, 0, estado, cl, al);
+	} 
+	
+	private Pedidos objPedido(){
+		Clientes cl = new Clientes();
+		Almacenes al = new Almacenes();
+		cl.setCodigo(Integer.parseInt(txtCodigoCliente.getText()));
+		al.setCodigo(Integer.parseInt(txtCodigoAlmacen.getText()));
+		
+		return new Pedidos(Integer.parseInt(txtNumeroPedido.getText()), fechaPedido(), 
+				Double.parseDouble(txtIva.getText()), Double.parseDouble(txtTotalPedido.getText()), 'A', cl, al);
+	} 
+	
+	private JDateChooser dateChooser;
+	private JTable tablaProductosElegidos;
+	private JTable tablaProductosDisponibles;
+	private JTextField txtIva;
+	private JTextField txtTotalPedido;
+		
+	private String fechaPedido(){
+		Date today = dateChooser.getDate();
+		String result;
+
+		SimpleDateFormat formatter;
+		formatter = new SimpleDateFormat("dd-MM-yyyy");
+		result = formatter.format(today);
+
+		return result;
+	}
+	
+	private void CalculoPedido() {
+		double suma = 0;
+		for (int i = 1; i <= tablaProductosElegidos.getRowCount(); i++) {
+			suma += Double.parseDouble(tablaProductosElegidos.getValueAt((i-1), 4).toString());
+		}
+		double iva = suma * 0.12;
+		double total = suma + iva;
+		
+		txtIva.setText(Double.toString(iva));
+		txtTotalPedido.setText(Double.toString(total));				
+	}
+	
+	private void reLoadForm() {
+		Frm_GestionPedidos nueva = new Frm_GestionPedidos();
+		nueva.setLocationRelativeTo(null);
+		nueva.setVisible(true);
+		dispose();
+	}
+	
+	
+	private void restaurarEnStock() {
+		Linea_Pedido lped;
+		Pedido pe;
+		Producto prod;
+		
+		List<Linea_Pedido> lineasActivas = new ArrayList<Linea_Pedido>();
+	
+		for (int i = 0; i < tablaProductosElegidos.getRowCount(); i++) {
+			lped = new Linea_Pedido();
+			pe = new Pedido();
+			prod = new Producto();
+			
+			pe.setNumeroPedido(Integer.parseInt(txtNumeroPedido.getText()));			
+			prod.setCodigoProducto(Integer.parseInt(tablaProductosElegidos.getValueAt(i, 0).toString()));
+			lped.setPedido(pe);
+			lped.setProducto(prod);
+			lped.setCantidad(Integer.parseInt(tablaProductosElegidos.getValueAt(i, 3).toString()));				
+			
+			lineasActivas.add(lped);
+		}
+	
+		stdo.solicitarDevolucionProducto(lineasActivas);
+	}
+	
+}

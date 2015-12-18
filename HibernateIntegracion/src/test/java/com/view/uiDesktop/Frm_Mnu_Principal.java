@@ -1,0 +1,135 @@
+package com.view.uiDesktop;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+@SuppressWarnings("serial")
+public class Frm_Mnu_Principal extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Frm_Mnu_Principal frame = new Frm_Mnu_Principal();
+					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Frm_Mnu_Principal() {
+		setResizable(false);
+		setTitle("Mini Sistema de Pedidos");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 600);
+		
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		JMenu mnPedidos = new JMenu("Pedidos");
+		menuBar.add(mnPedidos);
+		
+		JMenuItem mntmGenerarPedido = new JMenuItem("Generar Pedido");
+		mntmGenerarPedido.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Frm_GestionPedidos pedidos = new Frm_GestionPedidos();
+				pedidos.setLocationRelativeTo(null);
+				pedidos.setVisible(true);
+			}
+		});
+		mnPedidos.add(mntmGenerarPedido);
+		
+		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mntmSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		mnPedidos.add(mntmSalir);
+		
+		JMenu mnEmpresa = new JMenu("Empresa");
+		menuBar.add(mnEmpresa);
+		
+		JMenu mnClientes = new JMenu("Clientes");
+		mnEmpresa.add(mnClientes);
+		
+		JMenuItem mntmAdministrarClientes = new JMenuItem("Administrar Clientes");
+		mntmAdministrarClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Frm_GestionClientes cliente = new Frm_GestionClientes();
+				cliente.setLocationRelativeTo(null);
+				cliente.setVisible(true);
+			}
+		});
+		mnClientes.add(mntmAdministrarClientes);
+		
+		JMenu mnAlmacenes = new JMenu("Almacenes");
+		mnEmpresa.add(mnAlmacenes);
+		
+		JMenuItem mntmAdministrarAlmacenes = new JMenuItem("Administrar Almacenes");
+		mntmAdministrarAlmacenes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Frm_GestionAlmacen almacen = new Frm_GestionAlmacen();
+				almacen.setLocationRelativeTo(null);
+				almacen.setVisible(true);
+			}
+		});
+		mnAlmacenes.add(mntmAdministrarAlmacenes);
+		
+		JMenu mnNewMenu = new JMenu("Productos");
+		mnEmpresa.add(mnNewMenu);
+		
+		JMenuItem mntmNuevoProducto = new JMenuItem("Administrar Productos *");
+		mntmNuevoProducto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Frm_GestionProductos nuevo = new Frm_GestionProductos();
+				nuevo.setLocationRelativeTo(null);
+				nuevo.setVisible(true);
+			}
+		});
+		mnNewMenu.add(mntmNuevoProducto);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblIntegrantes = new JLabel("Integrantes:");
+		lblIntegrantes.setBounds(628, 478, 95, 22);
+		contentPane.add(lblIntegrantes);
+		
+		JLabel lblDavidArvalo = new JLabel("David Arévalo C.");
+		lblDavidArvalo.setBounds(628, 502, 156, 22);
+		contentPane.add(lblDavidArvalo);
+		
+		JLabel lblJosselynGomezQ = new JLabel("Josselyn Gomez Q.");
+		lblJosselynGomezQ.setBounds(628, 518, 156, 22);
+		contentPane.add(lblJosselynGomezQ);
+		
+		JLabel lblSistemaDePedidos = new JLabel("Sistema de Pedidos");
+		lblSistemaDePedidos.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblSistemaDePedidos.setBounds(29, 514, 202, 26);
+		contentPane.add(lblSistemaDePedidos);
+	}
+}

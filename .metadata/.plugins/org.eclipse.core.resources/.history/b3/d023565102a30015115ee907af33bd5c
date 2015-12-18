@@ -1,0 +1,71 @@
+package com.hibernateintegracion.dao.impl;
+
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.StaleStateException;
+import org.hibernate.Transaction;
+
+import com.hibernateintegracion.dao.PedidosDAO;
+import com.hibernateintegracion.domain.Clientes;
+import com.hibernateintegracion.domain.Pedidos;
+import com.hibernateintegracion.persistence.NewHibernateUtil;
+
+public class PostgresPedidosDAO implements PedidosDAO {
+
+	@Override
+	public void insertar(Pedidos pedido) {
+		Session session = new NewHibernateUtil().getSession();
+		Transaction tr = session.beginTransaction();
+		session.save(pedido);
+		tr.commit();
+
+	}
+
+	@Override
+	public void actualizar(Pedidos pedido) {
+		Session session = new NewHibernateUtil().getSession();
+		Transaction tr = session.beginTransaction();
+		Pedidos loadPersistence = (Pedidos) session.load(Pedidos.class, pedido.getNumero());
+		
+		try{
+			if(session.contains(loadPersistence)){
+				session.update(pedido);	
+			}
+			tr.commit();
+			
+		} catch (StaleStateException e){
+			tr.rollback();
+		}
+
+	}
+
+	@Override
+	public void cambiarEstado(Pedidos pedido) {
+			
+
+	}
+
+	@Override
+	public List<Pedidos> pedidosReservados() {
+		Session session = new NewHibernateUtil().getSession();
+		
+		String sql="SELECT c.numero, c.fecha, c.iva, c.total, c.estado, c.codigo_almacen FROM Pedidos c, Almacenes a WHERE a.codigo = c.codigo_almacen AND c.estado LIKE 'R%'";
+		
+		String sql2 = "FROM Pedidos c, Almacenes a, Clientes b WHERE a.codigo = c.codigo_almacen AND b.codigo = c.codigo_cliente AND c.estado LIKE 'R%'";
+		
+		Query query = session.createQuery(sql2);	
+		
+		List<Object> lista = query.list();
+		
+		Pedidos p = (Pedidos) lista.get(1);
+		
+		for (Object ob: lista){			
+			System.out.println(ob);
+		}
+		
+		return null;//(List<Pedidos>)query.list();
+	}
+
+}

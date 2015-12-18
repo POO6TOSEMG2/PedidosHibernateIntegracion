@@ -1,0 +1,5 @@
+//com.springsource.config.ui.prefs.activePageIndex\:/HibernateIntegracion/src/main/java/appContext.xml=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<activePage index\="0"/>
+//com.springsource.config.ui.prefs.activePageIndex\:/HibernateIntegracion/src/main/java/com/hibernateintegracion/domain/Pedidos.hbm.xml=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<activePage index\="0"/>
+//com.springsource.config.ui.prefs.activePageIndex\:/HibernateIntegracion/src/main/java/com/hibernateintegracion/persistence/hibernate.cfg.xml=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<activePage index\="0"/>
+//com.springsource.config.ui.prefs.activePageIndex\:/HibernateIntegracion/src/main/java/com/hibernateintegracion/persistence/hibernate.reveng.xml=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<activePage index\="0"/>
+eclipse.preferences.version=1

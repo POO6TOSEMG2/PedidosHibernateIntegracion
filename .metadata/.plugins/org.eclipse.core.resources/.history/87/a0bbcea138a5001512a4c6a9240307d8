@@ -1,0 +1,27 @@
+package com.testpedidos;
+
+import java.util.List;
+
+import com.hibernateintegracion.dao.LineaPedidosDAO;
+import com.hibernateintegracion.dao.impl.PostgresLineaPedido;
+import com.hibernateintegracion.domain.LineaPedidos;
+import com.hibernateintegracion.domain.Pedidos;
+
+public class TestLineaP {
+
+	public static void main(String[] args) {
+		LineaPedidosDAO lineas = new PostgresLineaPedido();
+		
+		LineaPedidos linea = new LineaPedidos();
+		Pedidos pedido = new Pedidos();
+		pedido.setNumero(1000000000);
+		linea.setPedidos(pedido);;
+		
+		List<LineaPedidos> ln = lineas.obtenerLineasReservadasPedidos(linea);
+
+		for(LineaPedidos lp : ln)
+			System.out.println(lp);
+		
+	}
+
+}

@@ -1,0 +1,20 @@
+package com.pruebas;
+
+public class Niveles {
+	int id;
+	Carreras fkCarrera;
+	int nivel;
+	
+	public Niveles() {
+		super();
+	}
+
+	// Constructor para ingresar datos a la base
+	public Niveles(Carreras fkCarrera, int nivel) {
+		this.fkCarrera = fkCarrera;
+		this.nivel = nivel;
+	}
+	
+	
+	
+}

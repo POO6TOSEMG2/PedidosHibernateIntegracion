@@ -1,0 +1,24 @@
+package com.pruebas;
+
+public class NMaterias {
+	int id;
+	String codmalla;
+	String nombre;
+	String descripcion;
+	Niveles nivelmateria;
+	
+	public NMaterias() {
+		super();
+	}
+
+	public NMaterias(int id, String codmalla, String nombre, String descripcion, Niveles nivelmateria) {
+		this.id = id;
+		this.codmalla = codmalla;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+		this.nivelmateria = nivelmateria;
+	}
+	
+	
+	
+}

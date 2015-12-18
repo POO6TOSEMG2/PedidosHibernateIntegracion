@@ -1,0 +1,9 @@
+package com.pruebas;
+
+public class NMaterias {
+	int id;
+	String codmalla;
+	String nombre;
+	String descripcion;
+	Niveles nivelmateria;
+}

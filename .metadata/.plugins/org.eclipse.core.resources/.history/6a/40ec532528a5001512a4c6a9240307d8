@@ -1,0 +1,51 @@
+package com.pruebas;
+
+public class Niveles {
+	int id;
+	Carreras fkCarrera;
+	int nivel;
+	
+	public Niveles() {
+		super();
+	}
+
+	// Constructor para ingresar datos a la base 
+	// (el serial se mete solo así que no debes meterlo)
+	// porque si lo haces te bota error de nulidad
+	public Niveles(Carreras fkCarrera, int nivel) {
+		this.fkCarrera = fkCarrera;
+		this.nivel = nivel;
+	}
+
+	// Constructor para consultar datos 
+	public Niveles(int id, Carreras fkCarrera, int nivel) {
+		this.id = id;
+		this.fkCarrera = fkCarrera;
+		this.nivel = nivel;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Carreras getFkCarrera() {
+		return fkCarrera;
+	}
+
+	public void setFkCarrera(Carreras fkCarrera) {
+		this.fkCarrera = fkCarrera;
+	}
+
+	public int getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(int nivel) {
+		this.nivel = nivel;
+	}
+	
+}

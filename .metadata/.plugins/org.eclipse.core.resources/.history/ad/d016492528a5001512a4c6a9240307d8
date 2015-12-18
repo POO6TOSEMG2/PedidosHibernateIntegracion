@@ -1,0 +1,62 @@
+package com.pruebas;
+
+public class NMaterias {
+	int id;
+	String codmalla;
+	String nombre;
+	String descripcion;
+	Niveles nivelmateria;
+	
+	public NMaterias() {
+		super();
+	}
+
+	public NMaterias(int id, String codmalla, String nombre, String descripcion, Niveles nivelmateria) {
+		this.id = id;
+		this.codmalla = codmalla;
+		this.nombre = nombre;
+		this.descripcion = descripcion;
+		this.nivelmateria = nivelmateria;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getCodmalla() {
+		return codmalla;
+	}
+
+	public void setCodmalla(String codmalla) {
+		this.codmalla = codmalla;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Niveles getNivelmateria() {
+		return nivelmateria;
+	}
+
+	public void setNivelmateria(Niveles nivelmateria) {
+		this.nivelmateria = nivelmateria;
+	}
+	
+}
